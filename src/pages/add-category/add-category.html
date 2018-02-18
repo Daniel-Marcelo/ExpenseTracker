@@ -1,0 +1,21 @@
+<ion-header>
+    <ion-navbar>
+        <button ion-button menuToggle>
+            <ion-icon name="menu"></ion-icon>
+        </button>
+        <ion-title>Add Category</ion-title>
+    </ion-navbar>
+</ion-header>
+
+<ion-content>
+    <ion-list>
+        <form (submit)="doSaveCategory()" id="add-category-form" style="margin: 10px;">
+            <ion-list>
+                <ion-item id="add-category-item">
+                    <ion-input id="add-category-input" type="text" placeholder="Category" name="category" [(ngModel)]="category"></ion-input>
+                </ion-item>
+                <button ion-button block>Save</button>
+            </ion-list>
+        </form>
+    </ion-list>
+</ion-content>

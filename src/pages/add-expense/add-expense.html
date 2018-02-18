@@ -1,0 +1,50 @@
+<ion-header>
+  <ion-navbar>
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>Add Expense</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+  <ion-grid>
+    <form (ngSubmit)="doSaveExpense()">
+      <ion-row>
+        <ion-col>
+          <ion-item>
+            <ion-label floating>Category</ion-label>
+            <ion-input type="text" name="category" [readonly]="true" (focus)="openCategorySelectionModal()" [(ngModel)]="expense.category"></ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+
+      <ion-row>
+        <ion-col>
+          <ion-item>
+            <ion-label floating>Amount</ion-label>
+            <ion-input type="number" name="amount" [(ngModel)]="expense.amount"></ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+
+      <ion-row>
+        <ion-col>
+          <div (click)="openDatePicker()">
+            <ion-item>
+              <ion-label floating>Date</ion-label>
+              <ion-input type="text" name="date" [readonly]="true" (focus)="openDatePicker()" [(ngModel)]="expense.date"></ion-input>
+            </ion-item>
+          </div>
+        </ion-col>
+      </ion-row>
+
+      <ion-row>
+        <ion-col>
+          <button ion-button block>Save Expense</button>
+        </ion-col>
+      </ion-row>
+    </form>
+
+  </ion-grid>
+</ion-content>
