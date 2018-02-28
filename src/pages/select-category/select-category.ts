@@ -21,24 +21,37 @@ export class SelectCategoryPage {
   searchString: string;
   @ViewChild("searchBar") mainSearchBar;
 
-
   constructor(public viewCtrl: ViewController, public categoryService: CategoryService, public keyboard: Keyboard) {
     this.categories = new Set<string>();
+    this.searchString = "";
   }
 
   ionViewDidEnter() {
+
+    this.getAllCategories();
 
     setTimeout(() => {
       this.mainSearchBar.setFocus();
       this.keyboard.show();
     }, 0);
-    
+
+  }
+
+  getAllCategories() {
+
+    this.categoryService.getCategories().then(
+      (categories: Set<string>) => this.categories = categories ? categories : new Set<string>()
+    );
   }
 
   getCategories() {
 
-    if (this.searchString && this.searchString.trim() !== '') {
-      this.categories = this.categoryService.getCategories(this.searchString);
+    if(this.searchString.trim() === '') {
+      this.getAllCategories();
+    } else {
+      this.categoryService.getCategories(this.searchString).then(
+        (categories: Set<string>) => this.categories = categories ? categories : new Set<string>()
+      );
     }
   }
 
@@ -48,12 +61,10 @@ export class SelectCategoryPage {
     }
   }
 
-  delete(category: string) {
-    this.categoryService.deleteCategory(category)
-    .then(
+  deleteCategory(category: string) {
+    this.categoryService.deleteCategory(category).then(
       (categories: Set<string>) => this.categories = categories ? categories : new Set<string>()
     );
-    // this.getCategories();
   }
 
 }

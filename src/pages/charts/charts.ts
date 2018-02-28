@@ -31,7 +31,6 @@ export class ChartsPage {
 
     this.expenseService.getExpenses(budget).then(
       (expenses: Expense[]) => {
-        this
       });
     alert('l');
   }
