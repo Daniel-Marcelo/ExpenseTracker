@@ -1,7 +1,6 @@
 export class Expense {
     amount: number;
-    date: string;
+    date: Date;
     category: string;
 
-    constructor() { }
 }

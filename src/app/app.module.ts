@@ -14,13 +14,19 @@ import { ChartsPageModule } from '../pages/charts/charts.module'
 
 import { CategoryService } from '../services/category.service';
 import { ExpenseService } from '../services/expense.service';
+import { BudgetService } from '../services/budget.service';
 import { Keyboard } from '@ionic-native/keyboard'
+
+import { IonicStorageModule } from '@ionic/storage';
 
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { DatePicker } from '@ionic-native/date-picker';
 
+
 import { AutoCompleteModule } from 'primeng/autocomplete';
+import { CreateBudgetPageModule } from '../pages/create-budget/create-budget.module';
+import { CreateBudgetPage } from '../pages/create-budget/create-budget';
 
 @NgModule({
   declarations: [
@@ -37,7 +43,9 @@ import { AutoCompleteModule } from 'primeng/autocomplete';
     IonicModule.forRoot(MyApp),
     AutoCompleteModule,
     SelectCategoryPageModule,
-    ChartsPageModule
+    ChartsPageModule,
+    IonicStorageModule.forRoot(),
+    CreateBudgetPageModule
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -47,7 +55,8 @@ import { AutoCompleteModule } from 'primeng/autocomplete';
     HomePage,
     TabsPage,
     AddCategory,
-    AddExpense
+    AddExpense,
+    CreateBudgetPage
   ],
   providers: [
     StatusBar,
@@ -56,7 +65,8 @@ import { AutoCompleteModule } from 'primeng/autocomplete';
     CategoryService,
     ExpenseService,
     DatePicker,
-    Keyboard
+    Keyboard,
+    BudgetService
   ]
 })
 export class AppModule { }

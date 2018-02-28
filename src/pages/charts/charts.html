@@ -15,12 +15,18 @@
 
 <ion-content padding>
 
-  <ion-card>
+  <!-- <ion-card>
     <ion-card-header>
-      Bar Chart
+      Pie Chart
     </ion-card-header>
-    <ion-card-content>
+    <ion-card-content> -->
+        <ion-item>
+            <ion-label>Gender</ion-label>
+            <ion-select [(ngModel)]="budget" interface="popover">
+              <ion-option *ngFor="let budget of budgets" (ionSelect)="getExpenses(budget)" [value]="budget">{{budget.startDate}} - {{budget.endDate}}</ion-option>
+            </ion-select>
+          </ion-item>
       <canvas #barCanvas></canvas>
-    </ion-card-content>
-  </ion-card>
+    <!-- </ion-card-content>
+  </ion-card> -->
 </ion-content>

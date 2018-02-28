@@ -1,5 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
-import { IonicPage, NavController, NavParams, ViewController } from 'ionic-angular';
+import { IonicPage, ViewController } from 'ionic-angular';
 import { Keyboard } from '@ionic-native/keyboard';
 import { CategoryService } from '../../services/category.service';
 
@@ -17,34 +17,28 @@ import { CategoryService } from '../../services/category.service';
 })
 export class SelectCategoryPage {
 
-  categories: string[];
+  categories: Set<string>;
+  searchString: string;
   @ViewChild("searchBar") mainSearchBar;
 
 
   constructor(public viewCtrl: ViewController, public categoryService: CategoryService, public keyboard: Keyboard) {
-    this.categories = [];
-  }
-
-  ionViewDidLoad() {
-
-
-
+    this.categories = new Set<string>();
   }
 
   ionViewDidEnter() {
-    console.log('this.ionViewDidEnter');
+
     setTimeout(() => {
       this.mainSearchBar.setFocus();
       this.keyboard.show();
-    }, 150);
+    }, 0);
+    
   }
 
-  getCategories(ev: any) {
+  getCategories() {
 
-    let searchString: string = ev.target.value;
-
-    if (searchString && searchString.trim() !== '') {
-      this.categories = this.categoryService.getCategories(searchString);
+    if (this.searchString && this.searchString.trim() !== '') {
+      this.categories = this.categoryService.getCategories(this.searchString);
     }
   }
 
@@ -52,7 +46,14 @@ export class SelectCategoryPage {
     if (selectedCategory) {
       this.viewCtrl.dismiss(selectedCategory);
     }
+  }
 
+  delete(category: string) {
+    this.categoryService.deleteCategory(category)
+    .then(
+      (categories: Set<string>) => this.categories = categories ? categories : new Set<string>()
+    );
+    // this.getCategories();
   }
 
 }

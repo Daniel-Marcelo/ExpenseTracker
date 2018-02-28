@@ -1,8 +1,10 @@
 import { Component, ViewChild } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { ExpenseService } from '../../services/expense.service';
+import { BudgetService } from '../../services/budget.service';
 import { Chart } from 'chart.js';
 import { Expense } from '../../models/expense.model';
+import { Budget } from '../../models/budget.model';
 
 /**
  * Generated class for the ChartsPage page.
@@ -20,15 +22,27 @@ export class ChartsPage {
 
   @ViewChild('barCanvas') barCanvas;
   barChart: Chart;
+  budgets: any;
+  budget: any;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, public expenseService: ExpenseService) {
+  constructor(public budgetService: BudgetService, public navCtrl: NavController, public navParams: NavParams, public expenseService: ExpenseService) {
+  }
+  getExpenses(budget: Budget){
+
+    this.expenseService.getExpenses(budget).then(
+      (expenses: Expense[]) => {
+        this
+      });
+    alert('l');
   }
 
   ionViewWillEnter() {
-    console.log('About to enter');
     this.barChart.data.labels = this.getLabels();
-    this.barChart.data.data = this.getData();
+    this.barChart.data.datasets[0].data = this.getData();
+    this.barChart.data.datasets[0].backgroundColor  = this.barChart.data.datasets[0].hoverBackgroundColor  = this.getBackgroundColors();
     this.barChart.update();
+
+    this.budgets = this.budgetService.getBudgets();
   }
 
   ionViewDidLoad() {
@@ -38,49 +52,52 @@ export class ChartsPage {
 
     this.barChart = new Chart(this.barCanvas.nativeElement, {
 
-      type: 'bar',
+      type: 'doughnut',
       data: {
         labels: labels,
         datasets: [{
-          label: '# of Votes',
+          label: 'Expenses',
           data: data,
-          backgroundColor: [
-            'rgba(255, 99, 132, 0.2)',
-            'rgba(54, 162, 235, 0.2)',
-            'rgba(255, 206, 86, 0.2)',
-            'rgba(75, 192, 192, 0.2)',
-            'rgba(153, 102, 255, 0.2)',
-            'rgba(255, 159, 64, 0.2)'
-          ],
-          borderColor: [
-            'rgba(255,99,132,1)',
-            'rgba(54, 162, 235, 1)',
-            'rgba(255, 206, 86, 1)',
-            'rgba(75, 192, 192, 1)',
-            'rgba(153, 102, 255, 1)',
-            'rgba(255, 159, 64, 1)'
-          ],
-          borderWidth: 1
+          backgroundColor: this.getBackgroundColors(),
+          hoverBackgroundColor: this.getBackgroundColors()//,
+          // borderWidth: 1
         }]
-      },
-      options: {
-        scales: {
-          yAxes: [{
-            ticks: {
-              beginAtZero: true
-            }
-          }]
-        }
-      }
+      }// ,
+      // options: {
+      //   scales: {
+      //     yAxes: [{
+      //       ticks: {
+      //         beginAtZero: true
+      //       }
+      //     }]
+      //   }
+      // }
 
     });
+  }
+
+  getBackgroundColors(): string[] {
+
+    const aggregatedExpenses: Expense[] = this.expenseService.getAggregatedExpenses();
+    const colors: string[] = []
+
+    for (let expense of aggregatedExpenses) {
+      const color = 'rgba(' + this.getRandom() + ', ' + this.getRandom() + ', ' + this.getRandom() + ', 0.2)';
+      colors.push(color);
+    }
+
+    return colors;
+  }
+
+  getRandom() {
+    return Math.floor(Math.random() * 255) + 1
   }
 
   getLabels(): string[] {
     const aggregatedExpenses: Expense[] = this.expenseService.getAggregatedExpenses();
     const labels: string[] = [];
 
-    for(const aggregatedExpense of aggregatedExpenses) {
+    for (const aggregatedExpense of aggregatedExpenses) {
       labels.push(aggregatedExpense.category);
     }
     return labels;
@@ -90,7 +107,7 @@ export class ChartsPage {
     const aggregatedExpenses: Expense[] = this.expenseService.getAggregatedExpenses();
     const data: number[] = [];
 
-    for(const aggregatedExpense of aggregatedExpenses) {
+    for (const aggregatedExpense of aggregatedExpenses) {
       data.push(aggregatedExpense.amount);
     }
     return data;

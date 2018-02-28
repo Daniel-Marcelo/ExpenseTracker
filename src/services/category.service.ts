@@ -1,31 +1,55 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnInit } from '@angular/core';
+import { Storage } from '@ionic/storage';
 
 @Injectable()
 export class CategoryService {
 
-    categories: string[];
+    categories: Set<string>;
 
-    constructor() {
-        this.categories = ['Dab', 'Dan', 'Cab', 'CSN', 'DJS', 'AWO', 'ASDSFD', 'asasdwq'];
+    constructor(private storage: Storage) {
+        // this.storage.get('categories').then((val) => {
+        //     this.categories = val ? val : new Set<string>();
+        // });
     }
 
     addCategory(category: string) {
         if (category) {
-            this.categories.push(category);
+            this.categories.add(category);
+            this.storage.set('categories', this.categories);
         }
     }
 
-    getCategories(searchString?: string): string[] {
-        if (searchString) {
-            const filteredCategories: string[] = []
-            for (const category of this.categories) {
-                if (category.toUpperCase().indexOf(searchString.toUpperCase()) >= 0) {
-                    filteredCategories.push(category);
-                }
+    getCategories(searchString: string): Set<string> {
+
+        const filteredCategories: Set<string> = new Set<string>();
+
+        this.categories.forEach(category => {
+            if (category.toUpperCase().indexOf(searchString.toUpperCase()) >= 0) {
+                filteredCategories.add(category);
             }
-            return filteredCategories;
-        }
-        return this.categories;
+        });
+
+        return filteredCategories;
     }
+
+    // deleteCategory(category: string) {
+    //     this.categories.delete(category);
+    // }
+
+    deleteCategory(category: string): Promise<Set<string>> {
+
+        return <Promise<Set<string>>> this.storage.get('categories').then((categories: Set<string>) => {
+
+            if(categories && categories.size > 0) {
+                categories.delete(category);
+                this.storage.set("categories", categories);
+
+                return categories;
+            }
+
+            return new Set<string>();
+        });
+    }
+
 
 }
