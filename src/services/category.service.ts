@@ -7,9 +7,9 @@ export class CategoryService {
     categories: Set<string>;
 
     constructor(private storage: Storage) {
-        // this.storage.get('categories').then((val) => {
-        //     this.categories = val ? val : new Set<string>();
-        // });
+        this.storage.get('categories').then((val) => {
+            this.categories = val ? val : new Set<string>();
+        });
     }
 
     addCategory(category: string) {
