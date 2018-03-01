@@ -90,7 +90,7 @@ export class ExpenseService {
             (aggregatedExpenses: Expense[]) => {
                 const isAggregationUpdated: boolean = this.updateAggregation(aggregatedExpenses, expense);
 
-                if(!isAggregationUpdated) {
+                if (!isAggregationUpdated) {
                     const aggregatedExpense: Expense = new Expense(expense.amount, expense.category);
 
                     aggregatedExpenses.push(aggregatedExpense);
