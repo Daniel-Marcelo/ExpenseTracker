@@ -6,29 +6,13 @@ import { Budget } from '../models/budget.model';
 @Injectable()
 export class ExpenseService {
 
-    // expenses: Expense[] = [];
-    // expenseCategories: string[] = [];
-    // aggregatedExpenses: Expense[] = [];
-
-    constructor(private storage: Storage) {
-
-        // this.storage.get('expenses').then((val) => {
-        //     this.expenses = val ? val : [];
-        // });
-
-        // this.storage.get('aggregatedExpenses').then((val) => {
-        //     this.aggregatedExpenses = val ? val : [];
-        // });
-
-        // this.storage.get('expenseCategories').then((val) => {
-        //     this.expenseCategories = val ? val : [];
-        // });
-    }
+    constructor(private storage: Storage) { }
 
 
     getExpenses(budget?: Budget): Promise<Expense[]> {
 
         return <Promise<Expense[]>>this.storage.get('expenses').then((expenses: Expense[]) => {
+            expenses = expenses ? expenses : new Array<Expense>();
 
             if (expenses && expenses.length > 0 && budget) {
                 return this.filterExpenses(expenses, budget);
@@ -36,6 +20,41 @@ export class ExpenseService {
                 return expenses;
             }
         });
+    }
+
+    getAggregatedExpenses(): Promise<Expense[]> {
+        return <Promise<Expense[]>>this.getExpenses().then(
+            (expenses: Expense[]) => this.aggregateExpenses(expenses)
+        );
+    }
+
+    aggregateExpenses(expenses: Expense[]): Expense[] {
+        const aggregatedExpenses: Expense[] = new Array<Expense>();
+
+        for (let expense of expenses) {
+            const isUpdated: boolean = this.updateExistingAggregation(expense, aggregatedExpenses);
+
+            if (!isUpdated) {
+                const newAggregatedExpense: Expense = new Expense(expense.amount, expense.category);
+                aggregatedExpenses.push(newAggregatedExpense);
+            }
+        }
+
+        return aggregatedExpenses;
+    }
+
+    private updateExistingAggregation(expense: Expense, aggregatedExpenses: Expense[]) {
+
+        const aggregatedExpense: Expense = aggregatedExpenses.find((aggregatedExpense) => {
+            return aggregatedExpense.category === expense.category;
+        });
+
+        if (aggregatedExpense) {
+            aggregatedExpense.amount += expense.amount;
+            return true;
+        } else {
+            return false;
+        }
     }
 
     filterExpenses(expenses: Expense[], budget: Budget): Expense[] {
@@ -46,21 +65,15 @@ export class ExpenseService {
         return expenses;
     }
 
-    // getAggregatedExpenses(): Expense[] {
-    //     return this.aggregatedExpenses;
-    // }
-
     addExpense(expense: Expense): void {
         if (expense) {
-            // this.expenses.push(expense);
-            // this.storage.set('expenses', this.expenses);
 
             this.getExpenses().then(
                 (expenses: Expense[]) => {
                     expenses.push(expense);
                     this.storage.set("expenses", expenses);
 
-                    this.addAggregation(expense);
+                    // this.addAggregation(expense);
                 }
             )
 
@@ -69,23 +82,6 @@ export class ExpenseService {
     }
 
     addAggregation(expense: Expense) {
-        // if (this.doesAggregationExist(expense.category)) {
-        //     this.updateAggregation(expense);
-        // } else {
-
-        //     const aggregatedExpense: Expense = new Expense();
-
-        //     aggregatedExpense.category = expense.category;
-        //     aggregatedExpense.amount = expense.amount;
-
-        //     // this.expenseCategories.push(expense.category);
-        //     this.aggregatedExpenses.push(aggregatedExpense);
-
-        //     this.storage.set('aggregatedExpenses', this.aggregatedExpenses);
-        //     // this.storage.set('expenseCategories', this.expenseCategories);
-
-        // }
-
         this.storage.get('aggregatedExpenses').then(
             (aggregatedExpenses: Expense[]) => {
                 const isAggregationUpdated: boolean = this.updateAggregation(aggregatedExpenses, expense);
@@ -98,12 +94,7 @@ export class ExpenseService {
                 }
             }
         );
-
     }
-
-    // doesAggregationExist(category: string): boolean {
-    //     return this.expenseCategories.indexOf(category) >= 0;
-    // }
 
     updateAggregation(aggregatedExpenses: Expense[], expense: Expense): boolean {
 

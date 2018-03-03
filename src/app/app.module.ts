@@ -10,7 +10,6 @@ import { TabsPage } from '../pages/tabs/tabs';
 import { AddCategory } from '../pages/add-category/add-category';
 import { AddExpense } from '../pages/add-expense/add-expense';
 import { SelectCategoryPageModule } from '../pages/select-category/select-category.module';
-import { ChartsPageModule } from '../pages/charts/charts.module'
 
 import { CategoryService } from '../services/category.service';
 import { ExpenseService } from '../services/expense.service';
@@ -25,8 +24,8 @@ import { DatePicker } from '@ionic-native/date-picker';
 
 
 import { AutoCompleteModule } from 'primeng/autocomplete';
-import { CreateBudgetPageModule } from '../pages/create-budget/create-budget.module';
 import { CreateBudgetPage } from '../pages/create-budget/create-budget';
+import { ChartsPage } from '../pages/charts/charts';
 
 @NgModule({
   declarations: [
@@ -36,16 +35,16 @@ import { CreateBudgetPage } from '../pages/create-budget/create-budget';
     HomePage,
     TabsPage,
     AddCategory,
-    AddExpense
+    AddExpense,
+    ChartsPage,
+    CreateBudgetPage
   ],
   imports: [
     BrowserModule,
     IonicModule.forRoot(MyApp),
     AutoCompleteModule,
     SelectCategoryPageModule,
-    ChartsPageModule,
     IonicStorageModule.forRoot(),
-    CreateBudgetPageModule
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -56,6 +55,7 @@ import { CreateBudgetPage } from '../pages/create-budget/create-budget';
     TabsPage,
     AddCategory,
     AddExpense,
+    ChartsPage,
     CreateBudgetPage
   ],
   providers: [

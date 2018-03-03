@@ -1,5 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { IonicPage, NavController } from 'ionic-angular';
 import { ExpenseService } from '../../services/expense.service';
 import { BudgetService } from '../../services/budget.service';
 import { Chart } from 'chart.js';
@@ -13,9 +13,7 @@ import { Budget } from '../../models/budget.model';
  * Ionic pages and navigation.
  */
 
-@IonicPage()
 @Component({
-  selector: 'page-charts',
   templateUrl: 'charts.html',
 })
 export class ChartsPage {
@@ -25,59 +23,71 @@ export class ChartsPage {
   budgets: any;
   budget: any;
 
-  constructor(public budgetService: BudgetService, public navCtrl: NavController, public navParams: NavParams, public expenseService: ExpenseService) {
+  constructor(public budgetService: BudgetService, public navCtrl: NavController, public expenseService: ExpenseService) {
   }
-  getExpenses(budget: Budget){
+
+
+  getExpenses(budget: Budget) {
 
     this.expenseService.getExpenses(budget).then(
       (expenses: Expense[]) => {
       });
-    alert('l');
+  }
+
+  getBudgets() {
+    this.budgetService.getBudgets().then(
+      (budgets: Budget[]) => this.budgets = budgets
+    )
   }
 
   ionViewWillEnter() {
-    this.barChart.data.labels = this.getLabels();
-    this.barChart.data.datasets[0].data = this.getData();
-    this.barChart.data.datasets[0].backgroundColor  = this.barChart.data.datasets[0].hoverBackgroundColor  = this.getBackgroundColors();
-    this.barChart.update();
-
-    this.budgets = this.budgetService.getBudgets();
+    this.getAggregatedExpenses();
+    this.getBudgets();
   }
 
   ionViewDidLoad() {
 
-    const labels = this.getLabels();
-    const data = this.getData();
+    // const labels = this.getLabels();
+    // const data = this.getData();
+    // const backgroundColors = this.getBackgroundColors();
 
     this.barChart = new Chart(this.barCanvas.nativeElement, {
 
       type: 'doughnut',
       data: {
-        labels: labels,
+        labels: [],
         datasets: [{
           label: 'Expenses',
-          data: data,
-          backgroundColor: this.getBackgroundColors(),
-          hoverBackgroundColor: this.getBackgroundColors()//,
-          // borderWidth: 1
+          data: [],
+          backgroundColor: [],
+          hoverBackgroundColor: []
         }]
-      }// ,
-      // options: {
-      //   scales: {
-      //     yAxes: [{
-      //       ticks: {
-      //         beginAtZero: true
-      //       }
-      //     }]
-      //   }
-      // }
-
+      }
     });
   }
 
-  getBackgroundColors(): string[] {
+  getAggregatedExpenses() {
+    this.expenseService.getAggregatedExpenses().then(
+      (aggregatedExpenses: Expense[]) => {
+        const colors: string[] = this.getBackgroundColors(aggregatedExpenses);
+        const labels: string[] = this.getLabels(aggregatedExpenses);
+        const data: number[] = this.getData(aggregatedExpenses);
 
-    const aggregatedExpenses: Expense[] = this.expenseService.getAggregatedExpenses();
+        this.updateChart(colors, labels, data);
+      }
+    );
+  }
+
+  updateChart(colors: string[], labels: string[], data: number[]) {
+    this.barChart.data.labels = labels;
+    this.barChart.data.datasets[0].data = data;
+    this.barChart.data.datasets[0].backgroundColor = this.barChart.data.datasets[0].hoverBackgroundColor = colors;
+    this.barChart.update();
+  }
+
+  getBackgroundColors(aggregatedExpenses: Expense[]): string[] {
+
+    // const aggregatedExpenses: Expense[] = this.expenseService.getAggregatedExpenses();
     const colors: string[] = []
 
     for (let expense of aggregatedExpenses) {
@@ -88,12 +98,29 @@ export class ChartsPage {
     return colors;
   }
 
+  // getBackgroundColors(): string[] {
+
+  //   this.expenseService.getAggregatedExpenses().then(
+  //     (aggregatedExpenses: Expense[]) => {
+  //       const colors: string[] = [];
+
+  //       for (let expense of aggregatedExpenses) {
+  //         const color = 'rgba(' + this.getRandom() + ', ' + this.getRandom() + ', ' + this.getRandom() + ', 0.2)';
+  //         colors.push(color);
+  //       }
+  //       return colors;
+  //     }
+  //   );
+
+
+  // }
+
   getRandom() {
     return Math.floor(Math.random() * 255) + 1
   }
 
-  getLabels(): string[] {
-    const aggregatedExpenses: Expense[] = this.expenseService.getAggregatedExpenses();
+  getLabels(aggregatedExpenses: Expense[]): string[] {
+    // const aggregatedExpenses: Expense[] = this.expenseService.getAggregatedExpenses();
     const labels: string[] = [];
 
     for (const aggregatedExpense of aggregatedExpenses) {
@@ -102,8 +129,8 @@ export class ChartsPage {
     return labels;
   }
 
-  getData(): number[] {
-    const aggregatedExpenses: Expense[] = this.expenseService.getAggregatedExpenses();
+  getData(aggregatedExpenses: Expense[]): number[] {
+    // const aggregatedExpenses: Expense[] = this.expenseService.getAggregatedExpenses();
     const data: number[] = [];
 
     for (const aggregatedExpense of aggregatedExpenses) {

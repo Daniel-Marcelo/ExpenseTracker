@@ -4,22 +4,27 @@ import { Storage } from '@ionic/storage';
 @Injectable()
 export class CategoryService {
 
-    constructor(private storage: Storage) {}
+    constructor(private storage: Storage) {
+        this.storage.set('categories', ['household']);
+    }
 
     addCategory(category: string): void {
         if (category) {
-            this.getCategories().then((categories: Set<string>) => {
-                categories.add(category);
+            this.getCategories().then((categories: Array<string>) => {
+
+                if(categories.indexOf(category) < 0){
+                    categories.push(category);
+                }
                 this.storage.set('categories', categories);
             });
         }
     }
 
-    getCategories(searchString?: string): Promise<Set<string>> {
+    getCategories(searchString?: string): Promise<Array<string>> {
 
-        return <Promise<Set<string>>>this.storage.get('categories').then((categories: Set<string>) => {
-
-            if (categories && categories.size > 0 && searchString) {
+        return <Promise<Array<string>>>this.storage.get('categories').then((categories: Array<string>) => {
+            categories = categories ? categories : new Array<string>();
+            if (categories.length > 0 && searchString) {
                 return this.filterCategories(categories, searchString);
             } else {
                 return categories;
@@ -27,21 +32,25 @@ export class CategoryService {
         });
     }
 
-    deleteCategory(category: string): Promise<Set<string>> {
+    deleteCategory(category: string): Promise<Array<string>> {
 
-        return <Promise<Set<string>>>this.getCategories().then((categories: Set<string>) => {
-            categories.delete(category);
+        return <Promise<Array<string>>>this.getCategories().then((categories: Array<string>) => {
+            categories = categories ? categories : new Array<string>();
+            let categoryIndex: number = categories.indexOf(category);
+            if(categoryIndex > -1){
+                categories.splice(categoryIndex, 1);
+            }
             this.storage.set('categories', categories);
             return categories;
         });
     }
 
-    private filterCategories(categories: Set<string>, searchString: string): Set<string> {
-        const filteredCategories: Set<string> = new Set<string>();
+    private filterCategories(categories: Array<string>, searchString: string): Array<string> {
+        const filteredCategories: Array<string> = new Array<string>();
 
         categories.forEach(category => {
             if (category.toUpperCase().indexOf(searchString.toUpperCase()) >= 0) {
-                filteredCategories.add(category);
+                filteredCategories.push(category);
             }
         });
 

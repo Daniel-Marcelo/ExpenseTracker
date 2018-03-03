@@ -17,12 +17,13 @@ import { CategoryService } from '../../services/category.service';
 })
 export class SelectCategoryPage {
 
-  categories: Set<string>;
+  categories: Array<string>;
   searchString: string;
   @ViewChild("searchBar") mainSearchBar;
 
   constructor(public viewCtrl: ViewController, public categoryService: CategoryService, public keyboard: Keyboard) {
-    this.categories = new Set<string>();
+
+    this.categories = new Array<string>();
     this.searchString = "";
   }
 
@@ -40,7 +41,7 @@ export class SelectCategoryPage {
   getAllCategories() {
 
     this.categoryService.getCategories().then(
-      (categories: Set<string>) => this.categories = categories ? categories : new Set<string>()
+      (categories: Array<string>) => this.categories = categories
     );
   }
 
@@ -50,7 +51,7 @@ export class SelectCategoryPage {
       this.getAllCategories();
     } else {
       this.categoryService.getCategories(this.searchString).then(
-        (categories: Set<string>) => this.categories = categories ? categories : new Set<string>()
+        (categories: Array<string>) => this.categories = categories
       );
     }
   }
@@ -63,7 +64,7 @@ export class SelectCategoryPage {
 
   deleteCategory(category: string) {
     this.categoryService.deleteCategory(category).then(
-      (categories: Set<string>) => this.categories = categories ? categories : new Set<string>()
+      (categories: Array<string>) => this.categories = categories
     );
   }
 

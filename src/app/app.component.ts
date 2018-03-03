@@ -27,7 +27,8 @@ export class MyApp {
     });
 
     this.pages = [
-      { title: 'Create Budget', component: CreateBudgetPage },
+      { title: 'Home', component: TabsPage},
+      { title: 'Create Budget', component: CreateBudgetPage }
     ];
   }
 

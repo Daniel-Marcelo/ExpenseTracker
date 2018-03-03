@@ -10,7 +10,6 @@ import {BudgetService } from '../../services/budget.service';
  * Ionic pages and navigation.
  */
 
-@IonicPage()
 @Component({
   selector: 'page-create-budget',
   templateUrl: 'create-budget.html',
@@ -30,5 +29,4 @@ export class CreateBudgetPage {
   doCreateBudget() {
     this.budgetService.createBudget(this.budget);
   }
-
 }

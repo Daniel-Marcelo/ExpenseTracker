@@ -6,23 +6,22 @@ import { Budget } from '../models/budget.model';
 @Injectable()
 export class BudgetService {
 
-    budgets: Budget[];
-
-    constructor(private storage: Storage) {
-
-        this.storage.get('budgets').then((val) => {
-            this.budgets = val ? val : [];
-        });
-    }
+    constructor(private storage: Storage) { }
 
     createBudget(budget: Budget) {
         if (budget) {
-            this.budgets.push(budget);
-            this.storage.set('budgets', this.budgets);
+            this.getBudgets().then(
+                (budgets: Budget[]) => {
+                    budgets.push(budget);
+                    this.storage.set('budgets', budgets);
+                }
+            )
         }
     }
 
-    getBudgets(): Budget[] {
-        return this.budgets;
+    getBudgets(): Promise<Budget[]> {
+        return this.storage.get('budgets').then((budgets: Budget[]) => {
+            return budgets ? budgets : [];
+        });
     }
 }
