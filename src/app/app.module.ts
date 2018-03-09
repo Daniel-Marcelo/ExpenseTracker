@@ -1,3 +1,4 @@
+
 import { NgModule, ErrorHandler } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
@@ -10,6 +11,7 @@ import { TabsPage } from '../pages/tabs/tabs';
 import { AddCategory } from '../pages/add-category/add-category';
 import { AddExpense } from '../pages/add-expense/add-expense';
 import { SelectCategoryPageModule } from '../pages/select-category/select-category.module';
+import { ExpensesPage } from '../pages/expenses/expenses';
 
 import { CategoryService } from '../services/category.service';
 import { ExpenseService } from '../services/expense.service';
@@ -37,7 +39,8 @@ import { ChartsPage } from '../pages/charts/charts';
     AddCategory,
     AddExpense,
     ChartsPage,
-    CreateBudgetPage
+    CreateBudgetPage,
+    ExpensesPage
   ],
   imports: [
     BrowserModule,
@@ -56,7 +59,8 @@ import { ChartsPage } from '../pages/charts/charts';
     AddCategory,
     AddExpense,
     ChartsPage,
-    CreateBudgetPage
+    CreateBudgetPage,
+    ExpensesPage
   ],
   providers: [
     StatusBar,

@@ -57,7 +57,7 @@ export class ExpenseService {
         }
     }
 
-    filterExpenses(expenses: Expense[], budget: Budget): Expense[] {
+    private filterExpenses(expenses: Expense[], budget: Budget): Expense[] {
         expenses.filter((expense: Expense) => {
             return expense.date >= budget.startDate && expense.date <= budget.endDate;
         });
@@ -72,12 +72,8 @@ export class ExpenseService {
                 (expenses: Expense[]) => {
                     expenses.push(expense);
                     this.storage.set("expenses", expenses);
-
-                    // this.addAggregation(expense);
                 }
-            )
-
-
+            );
         }
     }
 
@@ -96,7 +92,7 @@ export class ExpenseService {
         );
     }
 
-    updateAggregation(aggregatedExpenses: Expense[], expense: Expense): boolean {
+    private updateAggregation(aggregatedExpenses: Expense[], expense: Expense): boolean {
 
         let isAggregationUpdated: boolean = false;
 
@@ -109,5 +105,4 @@ export class ExpenseService {
         }
         return isAggregationUpdated;
     }
-
 }

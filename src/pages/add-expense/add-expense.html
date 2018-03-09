@@ -8,26 +8,25 @@
 </ion-header>
 
 <ion-content padding>
-  <form #addExpenseForm="ngForm" (ngSubmit)="doSaveExpense()">
+  <form [formGroup]="createExpenseForm" #addExpenseForm="ngForm" (ngSubmit)="doSaveExpense()">
 
-    <ion-item>
+    <ion-item id="category-ion-item" [class.ng-invalid]="!category.valid" [class.ng-valid]="category.valid">
       <ion-label floating>Category</ion-label>
-      <ion-input type="text" name="category" [readonly]="true" (focus)="openCategorySelectionModal()" [(ngModel)]="expense.category"></ion-input>
+      <ion-input type="text" name="category" [readonly]="true" (focus)="openCategorySelectionModal()" formControlName="category" [(ngModel)]="categoryString"></ion-input>
     </ion-item>
 
     <ion-item>
       <ion-label floating>Amount</ion-label>
-      <ion-input type="number" name="amount" [(ngModel)]="expense.amount"></ion-input>
+      <ion-input type="number" name="amount" formControlName="amount" [(ngModel)]="amountString"></ion-input>
     </ion-item>
 
     <ion-item>
       <ion-label floating>Date</ion-label>
-      <ion-datetime name="date" displayFormat="DD/MM/YYYY" [(ngModel)]="expense.date"></ion-datetime>
+      <ion-datetime name="date" displayFormat="DD/MM/YYYY" formControlName="date" [(ngModel)]="dateString"></ion-datetime>
     </ion-item>
     <div padding-left>
-      <button ion-button block>Save Expense</button>
+      <button ion-button block [disabled]="!createExpenseForm.valid">Save Expense</button>
     </div>
 
   </form>
-
 </ion-content>

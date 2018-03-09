@@ -56,7 +56,7 @@ export class SelectCategoryPage {
     }
   }
 
-  categorySelected(selectedCategory: string) {
+  categorySelected(selectedCategory?: string) {
     if (selectedCategory) {
       this.viewCtrl.dismiss(selectedCategory);
     }

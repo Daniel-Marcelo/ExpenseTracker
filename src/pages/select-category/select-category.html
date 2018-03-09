@@ -12,13 +12,12 @@
               <ion-icon name="arrow-back"></ion-icon>
           </button>
       </ion-buttons>
-    <ion-title>Select Category</ion-title>
+    <ion-searchbar [(ngModel)]="searchString" (ionInput)="getCategories()" #searchBar></ion-searchbar>
   </ion-navbar>
 
 </ion-header>
 
 <ion-content padding>
-  <ion-searchbar [(ngModel)]="searchString" (ionInput)="getCategories()" #searchBar></ion-searchbar>
 
   <ion-list>
     <ion-item-sliding *ngFor="let category of categories">

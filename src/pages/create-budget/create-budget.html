@@ -18,18 +18,25 @@
 
 <ion-content padding>
 
-  <form #createBudgetForm="ngForm" (ngSubmit)="doCreateBudget()">
+  <form [formGroup]="createBudgetForm" (ngSubmit)="doCreateBudget()">
 
     <ion-item>
       <ion-label floating>Start Date</ion-label>
-      <ion-datetime name="date" displayFormat="DD/MM/YYYY" [(ngModel)]="budget.startDate"></ion-datetime>
+      <!-- <ion-input type="text" required formControlName="startDate"></ion-input> -->
+      <ion-datetime type="text" name="budgetStartDate" displayFormat="DD/MM/YYYY" formControlName="startDate" (ionChange)="endDateString = null" [(ngModel)]="startDateString"></ion-datetime>
+
     </ion-item>
+    <!-- <ion-item *ngIf="!createBudgetForm.controls.startDate.valid">
+
+      <p>please enter a valid name</p>
+
+    </ion-item> -->
     <ion-item>
       <ion-label floating>End Date</ion-label>
-      <ion-datetime name="date" displayFormat="DD/MM/YYYY" [(ngModel)]="budget.endDate"></ion-datetime>
+      <ion-datetime type="text" name="budgetEndDate" [min] ="startDateString" displayFormat="DD/MM/YYYY" formControlName="endDate" [(ngModel)]="endDateString"></ion-datetime>
     </ion-item>
-
-    <button ion-button block>Save Budget</button>
-
+    <div padding-left>
+      <button ion-button block [disabled]="!createBudgetForm.valid">Save Budget</button>
+    </div>
   </form>
 </ion-content>

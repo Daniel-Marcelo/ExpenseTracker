@@ -24,7 +24,7 @@
     </ion-card-header>
     <ion-card-content> -->
   <ion-item>
-    <ion-label>Gender</ion-label>
+    <ion-label floating>Budget Period</ion-label>
     <ion-select [(ngModel)]="budget" interface="popover">
       <ion-option *ngFor="let budget of budgets" (ionSelect)="getExpenses(budget)" [value]="budget">{{budget.startDate}} - {{budget.endDate}}</ion-option>
     </ion-select>

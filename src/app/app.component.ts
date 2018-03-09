@@ -4,7 +4,6 @@ import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 
 import { TabsPage } from '../pages/tabs/tabs';
-import { AddExpense } from '../pages/add-expense/add-expense';
 import { SelectCategoryPage } from '../pages/select-category/select-category';
 import { CreateBudgetPage } from '../pages/create-budget/create-budget';
 
