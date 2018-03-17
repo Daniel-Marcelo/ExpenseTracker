@@ -1,22 +1,46 @@
-import { Component, ViewChild } from '@angular/core';
-import { ModalController } from 'ionic-angular';
+import { Component, OnInit } from '@angular/core';
+import { ModalController, ToastController } from 'ionic-angular';
 import { SelectCategoryPage } from '../select-category/select-category';
 import { Expense } from '../../models/expense.model';
 import { ExpenseService } from '../../services/expense.service';
-import { NgForm } from '@angular/forms';
+import { FormGroup, Validators, FormControl } from '@angular/forms';
 
 @Component({
     selector: 'add-expense',
     templateUrl: 'add-expense.html'
 })
 
-export class AddExpense {
+export class AddExpense implements OnInit {
 
+    categoryString: string;
+    amountString: string;
+    dateString: string;
+    descriptionString: string;
     expense: Expense;
-    @ViewChild('addExpenseForm') form: NgForm;
+    createExpenseForm: FormGroup;
 
-    constructor(public modalCtrl: ModalController, public expenseService: ExpenseService) {
+    ionViewDidEnter(){
+        this.createExpenseForm.reset();
+    }
+
+    ngOnInit() {
+        this.createExpenseForm = new FormGroup({
+            'category': new FormControl(this.categoryString, [
+                Validators.required
+            ]),
+            'amount': new FormControl(this.amountString, [
+                Validators.required
+            ]),
+            'date': new FormControl(this.dateString, [
+                Validators.required
+            ]), 
+            'description': new FormControl(this.descriptionString)
+        });
+    }
+
+    constructor(public modalCtrl: ModalController, public expenseService: ExpenseService, public toastCtrl: ToastController) {
         this.expense = new Expense();
+        this.dateString = new Date().toISOString();
     }
 
     openCategorySelectionModal() {
@@ -24,17 +48,38 @@ export class AddExpense {
         let profileModal = this.modalCtrl.create(SelectCategoryPage);
 
         profileModal.onDidDismiss(selectedCategory => {
-            this.expense.category = selectedCategory;
-        });
-
+            if (selectedCategory) {
+                this.categoryString = selectedCategory;
+            }
+        })
         profileModal.present();
-
     }
 
     doSaveExpense() {
-        this.expense.amount = parseFloat(<any>this.expense.amount);
+        this.expense.category = this.categoryString;
+        this.expense.description = this.descriptionString;
+        this.expense.date = new Date(this.dateString);
+        this.expense.amount = parseFloat(this.amountString);
+
         this.expenseService.addExpense(this.expense);
         this.expense = new Expense();
-        this.form.reset();
+        this.createExpenseForm.reset();
+        this.showSuccessToastMessage();
     }
+
+    showSuccessToastMessage(){
+        const toast = this.toastCtrl.create({
+          message: 'Expense saved successfully',
+          duration: 1000,
+          position: 'bottom'
+        });
+        toast.present();
+      }
+
+    get category() { return this.createExpenseForm.get('category'); }
+
+    get amount() { return this.createExpenseForm.get('amount'); }
+
+    get date() { return this.createExpenseForm.get('date'); }
+
 }

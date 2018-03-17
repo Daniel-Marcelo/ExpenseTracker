@@ -1,0 +1,26 @@
+<!--
+  Generated template for the CreateBudgetPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+
+    <ion-navbar>
+      <button ion-button menuToggle>
+        <ion-icon name="menu"></ion-icon>
+      </button>
+      <ion-title>Expenses</ion-title>
+    </ion-navbar>
+  
+  </ion-header>
+  
+  
+  <ion-content padding>
+    <ion-list>
+        <button ion-item *ngFor="let expense of expenses" (click)="expenseCategorySelected(expense.category)">
+          <span style="text-align: left">{{ expense.category }}</span>
+          <span style="float: right; margin-right: 30px">€ {{expense.amount}}</span>
+        </button>  
+      </ion-list>
+</ion-content>

@@ -7,7 +7,13 @@
 <ion-header>
 
   <ion-navbar>
-    <ion-title>Select Category</ion-title>
+      <ion-title>Select Category</ion-title>
+
+      <ion-buttons left>
+          <button ion-button icon-only (click)="viewCtrl.dismiss()">
+              <ion-icon name="arrow-back"></ion-icon>
+          </button>
+      </ion-buttons>
   </ion-navbar>
 
 </ion-header>
@@ -20,10 +26,10 @@
       <button ion-item (click)="categorySelected(category)">
         {{ category }}
       </button>
-      <ion-item-options (ionSwipe)="delete(category)">
-        <button ion-button expandable color="danger" (click)="delete(item)">
+      <ion-item-options (ionSwipe)="deleteCategory(category)">
+        <button ion-button expandable color="danger">
           <ion-icon name="trash"></ion-icon>
-          Delete
+          Delete 
         </button>
       </ion-item-options>
     </ion-item-sliding>

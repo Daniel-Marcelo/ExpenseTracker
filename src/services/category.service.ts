@@ -4,52 +4,54 @@ import { Storage } from '@ionic/storage';
 @Injectable()
 export class CategoryService {
 
-    categories: Set<string>;
+    constructor(private storage: Storage) { }
 
-    constructor(private storage: Storage) {
-        this.storage.get('categories').then((val) => {
-            this.categories = val ? val : new Set<string>();
-        });
-    }
-
-    addCategory(category: string) {
+    addCategory(category: string): void {
         if (category) {
-            this.categories.add(category);
-            this.storage.set('categories', this.categories);
+            this.getCategories().then((categories: Array<string>) => {
+
+                if(categories.indexOf(category) < 0){
+                    categories.push(category.toUpperCase());
+                }
+                this.storage.set('categories', categories);
+            });
         }
     }
 
-    getCategories(searchString: string): Set<string> {
+    getCategories(searchString?: string): Promise<Array<string>> {
 
-        const filteredCategories: Set<string> = new Set<string>();
+        return <Promise<Array<string>>>this.storage.get('categories').then((categories: Array<string>) => {
+            categories = categories ? categories : new Array<string>();
+            if (categories.length > 0 && searchString) {
+                return this.filterCategories(categories, searchString);
+            } else {
+                return categories;
+            }
+        });
+    }
 
-        this.categories.forEach(category => {
+    deleteCategory(category: string): Promise<Array<string>> {
+
+        return <Promise<Array<string>>>this.getCategories().then((categories: Array<string>) => {
+            categories = categories ? categories : new Array<string>();
+            let categoryIndex: number = categories.indexOf(category);
+            if(categoryIndex > -1){
+                categories.splice(categoryIndex, 1);
+            }
+            this.storage.set('categories', categories);
+            return categories;
+        });
+    }
+
+    private filterCategories(categories: Array<string>, searchString: string): Array<string> {
+        const filteredCategories: Array<string> = new Array<string>();
+
+        categories.forEach(category => {
             if (category.toUpperCase().indexOf(searchString.toUpperCase()) >= 0) {
-                filteredCategories.add(category);
+                filteredCategories.push(category);
             }
         });
 
         return filteredCategories;
     }
-
-    // deleteCategory(category: string) {
-    //     this.categories.delete(category);
-    // }
-
-    deleteCategory(category: string): Promise<Set<string>> {
-
-        return <Promise<Set<string>>> this.storage.get('categories').then((categories: Set<string>) => {
-
-            if(categories && categories.size > 0) {
-                categories.delete(category);
-                this.storage.set("categories", categories);
-
-                return categories;
-            }
-
-            return new Set<string>();
-        });
-    }
-
-
 }

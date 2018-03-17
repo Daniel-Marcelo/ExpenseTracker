@@ -9,12 +9,14 @@
 
 <ion-content>
     <ion-list>
-        <form (submit)="doSaveCategory()" id="add-category-form" style="margin: 10px;">
+        <form [formGroup]="createCategoryForm" (submit)="doSaveCategory()" id="add-category-form" style="margin: 10px;">
             <ion-list>
                 <ion-item id="add-category-item">
-                    <ion-input id="add-category-input" type="text" placeholder="Category" name="category" [(ngModel)]="category"></ion-input>
+                    <ion-input id="add-category-input" type="text" placeholder="Category" name="category" formControlName="category" [(ngModel)]="categoryValue"></ion-input>
                 </ion-item>
-                <button ion-button block>Save</button>
+                <div padding-left>
+                    <button ion-button block [disabled]="!createCategoryForm.valid">Save</button>
+                </div>
             </ion-list>
         </form>
     </ion-list>
