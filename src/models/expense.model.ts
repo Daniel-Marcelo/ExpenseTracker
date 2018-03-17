@@ -2,6 +2,7 @@ export class Expense {
     amount: number;
     date: Date;
     category: string;
+    description: string;
 
     constructor(amount?: number, category?: string) {
         if(amount && category) {

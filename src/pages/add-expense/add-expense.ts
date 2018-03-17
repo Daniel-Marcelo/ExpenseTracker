@@ -15,8 +15,13 @@ export class AddExpense implements OnInit {
     categoryString: string;
     amountString: string;
     dateString: string;
+    descriptionString: string;
     expense: Expense;
     createExpenseForm: FormGroup;
+
+    ionViewDidEnter(){
+        this.createExpenseForm.reset();
+    }
 
     ngOnInit() {
         this.createExpenseForm = new FormGroup({
@@ -29,6 +34,7 @@ export class AddExpense implements OnInit {
             'date': new FormControl(this.dateString, [
                 Validators.required
             ]), 
+            'description': new FormControl(this.descriptionString)
         });
     }
 
@@ -51,8 +57,10 @@ export class AddExpense implements OnInit {
 
     doSaveExpense() {
         this.expense.category = this.categoryString;
+        this.expense.description = this.descriptionString;
         this.expense.date = new Date(this.dateString);
         this.expense.amount = parseFloat(this.amountString);
+
         this.expenseService.addExpense(this.expense);
         this.expense = new Expense();
         this.createExpenseForm.reset();
@@ -63,7 +71,7 @@ export class AddExpense implements OnInit {
         const toast = this.toastCtrl.create({
           message: 'Expense saved successfully',
           duration: 1000,
-          position: 'middle'
+          position: 'bottom'
         });
         toast.present();
       }

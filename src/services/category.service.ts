@@ -4,16 +4,14 @@ import { Storage } from '@ionic/storage';
 @Injectable()
 export class CategoryService {
 
-    constructor(private storage: Storage) {
-        this.storage.set('categories', ['household']);
-    }
+    constructor(private storage: Storage) { }
 
     addCategory(category: string): void {
         if (category) {
             this.getCategories().then((categories: Array<string>) => {
 
                 if(categories.indexOf(category) < 0){
-                    categories.push(category);
+                    categories.push(category.toUpperCase());
                 }
                 this.storage.set('categories', categories);
             });

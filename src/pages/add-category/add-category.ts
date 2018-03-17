@@ -14,6 +14,10 @@ export class AddCategory implements OnInit{
     navController: NavController;
     createCategoryForm: FormGroup;
 
+    ionViewDidEnter(){
+        this.createCategoryForm.reset();
+    }
+    
     ngOnInit() {
         this.createCategoryForm = new FormGroup({
             'category': new FormControl(this.categoryValue, [
@@ -28,6 +32,7 @@ export class AddCategory implements OnInit{
 
     doSaveCategory() {
         this.categoryService.addCategory(this.categoryValue);
+        this.createCategoryForm.reset();
         this.navController.parent.select(0, {}, true);
     }
 

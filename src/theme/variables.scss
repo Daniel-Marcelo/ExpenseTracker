@@ -21,7 +21,8 @@ $app-direction: ltr;
 // the Sass variables found in Ionic's source scss files.
 // To view all the possible Ionic variables, see:
 // http://ionicframework.com/docs/theming/overriding-ionic-variables/
-
+$menu-wp-background : #60a0e0;
+  
 
 
 
@@ -86,3 +87,4 @@ $colors: (
 
 @import "roboto";
 @import "noto-sans";
+

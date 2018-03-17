@@ -8,6 +8,22 @@ export class ExpenseService {
 
     constructor(private storage: Storage) { }
 
+    deleteExpense(expenseToDelete: Expense): Promise<boolean> {
+        return this.getExpenses().then(
+            (expenses: Array<Expense>) => {
+                const filteredExpenses = expenses.filter((expense) => { return this.areExpensesDifferent(expense, expenseToDelete); })
+                this.storage.set("expenses", filteredExpenses);
+                return true;
+            }
+        )
+    }
+
+    areExpensesDifferent(expense: Expense, expenseToDelete: Expense): boolean{
+        return expense.category !== expenseToDelete.category ||
+            expense.amount !== expenseToDelete.amount ||
+            expense.date.getTime() !== expenseToDelete.date.getTime() ||
+            expense.description !== expenseToDelete.description ? true : false;
+    }
 
     getExpenses(budget?: Budget): Promise<Expense[]> {
 
@@ -22,9 +38,39 @@ export class ExpenseService {
         });
     }
 
+    sortByDateDescending(expenses: Array<Expense>): Array<Expense> {
+        expenses.sort((expenseOne: Expense, expenseTwo: Expense) => {
+            return (expenseOne.date < expenseTwo.date) ? 1 :
+                (expenseOne.date > expenseTwo.date) ? -1 : 0;
+        });
+
+        return expenses;
+    }
+
+    getExpensesByCategory(category: string): Promise<Expense[]> {
+        return <Promise<Expense[]>>this.storage.get('expenses').then((expenses: Expense[]) => {
+
+            const categoryExpenses: Array<Expense> = new Array<Expense>();
+
+            expenses = expenses ? expenses : new Array<Expense>();
+
+            expenses.forEach((expense) => {
+                if (expense.category === category) {
+                    categoryExpenses.push(expense);
+                }
+            });
+
+            return categoryExpenses;
+        });
+    }
+
     getAggregatedExpenses(): Promise<Expense[]> {
         return <Promise<Expense[]>>this.getExpenses().then(
-            (expenses: Expense[]) => this.aggregateExpenses(expenses)
+            (expenses: Expense[]) => {
+                expenses = this.aggregateExpenses(expenses);
+                expenses = this.sortByAmount(expenses);
+                return expenses;
+            }
         );
     }
 
@@ -39,8 +85,14 @@ export class ExpenseService {
                 aggregatedExpenses.push(newAggregatedExpense);
             }
         }
-
         return aggregatedExpenses;
+    }
+
+    private sortByAmount(expenses: Array<Expense>): Array<Expense> {
+        expenses.sort((expenseOne: Expense, expenseTwo: Expense) => {
+            return expenseTwo.amount - expenseOne.amount;
+        });
+        return expenses;
     }
 
     private updateExistingAggregation(expense: Expense, aggregatedExpenses: Expense[]) {

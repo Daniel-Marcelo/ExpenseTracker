@@ -18,10 +18,9 @@
   
   <ion-content padding>
     <ion-list>
-        <button ion-item *ngFor="let expense of expenses">
+        <button ion-item *ngFor="let expense of expenses" (click)="expenseCategorySelected(expense.category)">
           <span style="text-align: left">{{ expense.category }}</span>
           <span style="float: right; margin-right: 30px">€ {{expense.amount}}</span>
-          <ion-icon name="arrow-dropright" item-end></ion-icon>
         </button>  
       </ion-list>
 </ion-content>
