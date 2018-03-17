@@ -7,19 +7,19 @@
 <ion-header>
 
   <ion-navbar>
-      <ion-title>Select Category</ion-title>
+    <ion-title>Select Category</ion-title>
 
-      <ion-buttons left>
-          <button ion-button icon-only (click)="viewCtrl.dismiss()">
-              <ion-icon name="arrow-back"></ion-icon>
-          </button>
-      </ion-buttons>
+    <ion-buttons left>
+      <button ion-button icon-only (click)="viewCtrl.dismiss()">
+        <ion-icon name="arrow-back"></ion-icon>
+      </button>
+    </ion-buttons>
   </ion-navbar>
 
 </ion-header>
 
 <ion-content padding>
-  <ion-searchbar [(ngModel)]="searchString" (ionInput)="getCategories()" #searchBar></ion-searchbar>
+  <ion-searchbar [(ngModel)]="searchString" (ionInput)="getCategories()"></ion-searchbar>
 
   <ion-list>
     <ion-item-sliding *ngFor="let category of categories">
@@ -29,7 +29,7 @@
       <ion-item-options (ionSwipe)="deleteCategory(category)">
         <button ion-button expandable color="danger">
           <ion-icon name="trash"></ion-icon>
-          Delete 
+          Delete
         </button>
       </ion-item-options>
     </ion-item-sliding>

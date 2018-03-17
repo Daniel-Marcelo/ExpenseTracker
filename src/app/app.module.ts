@@ -14,7 +14,6 @@ import { ExpensesByCategoryPage } from '../pages/expenses-by-category/expenses-b
 import { CategoryService } from '../services/category.service';
 import { ExpenseService } from '../services/expense.service';
 import { BudgetService } from '../services/budget.service';
-import { Keyboard } from '@ionic-native/keyboard'
 
 import { IonicStorageModule } from '@ionic/storage';
 
@@ -63,7 +62,6 @@ import { ChartsPage } from '../pages/charts/charts';
     CategoryService,
     ExpenseService,
     DatePicker,
-    Keyboard,
     BudgetService
   ]
 })

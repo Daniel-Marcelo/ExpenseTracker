@@ -36,9 +36,6 @@ export class ExpensesByCategoryPage {
         );
     }
 
-    expenseCategorySelected(category: string) {
-    }
-
     deleteExpense(expense: Expense) {
         this.expenseService.deleteExpense(expense).then(
             (isSuccessfullyDeleted: boolean) => this.getExpensesByCategory()
