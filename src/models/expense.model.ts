@@ -1,11 +1,11 @@
 export class Expense {
     amount: number;
-    date: Date;
+    date: string;
     category: string;
     description: string;
 
     constructor(amount?: number, category?: string) {
-        if(amount && category) {
+        if (amount && category) {
             this.amount = amount;
             this.category = category;
         }

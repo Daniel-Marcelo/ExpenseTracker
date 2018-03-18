@@ -19,7 +19,7 @@ export class AddExpense implements OnInit {
     expense: Expense;
     createExpenseForm: FormGroup;
 
-    ionViewDidEnter(){
+    ionViewDidEnter() {
         this.createExpenseForm.reset();
     }
 
@@ -33,14 +33,13 @@ export class AddExpense implements OnInit {
             ]),
             'date': new FormControl(this.dateString, [
                 Validators.required
-            ]), 
+            ]),
             'description': new FormControl(this.descriptionString)
         });
     }
 
     constructor(public modalCtrl: ModalController, public expenseService: ExpenseService, public toastCtrl: ToastController) {
         this.expense = new Expense();
-        this.dateString = new Date().toISOString();
     }
 
     openCategorySelectionModal() {
@@ -58,7 +57,7 @@ export class AddExpense implements OnInit {
     doSaveExpense() {
         this.expense.category = this.categoryString;
         this.expense.description = this.descriptionString;
-        this.expense.date = new Date(this.dateString);
+        this.expense.date = this.dateString;
         this.expense.amount = parseFloat(this.amountString);
 
         this.expenseService.addExpense(this.expense);
@@ -67,14 +66,14 @@ export class AddExpense implements OnInit {
         this.showSuccessToastMessage();
     }
 
-    showSuccessToastMessage(){
+    showSuccessToastMessage() {
         const toast = this.toastCtrl.create({
-          message: 'Expense saved successfully',
-          duration: 1000,
-          position: 'bottom'
+            message: 'Expense saved successfully',
+            duration: 1000,
+            position: 'bottom'
         });
         toast.present();
-      }
+    }
 
     get category() { return this.createExpenseForm.get('category'); }
 

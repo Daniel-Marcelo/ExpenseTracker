@@ -24,21 +24,21 @@ export class ExpensesByCategoryPage {
         this.category = this.navParams.get('category');
     }
 
-    ionViewDidEnter() {
+    ionViewDidEnter(): void {
         this.getExpensesByCategory();
     }
 
-    getExpensesByCategory() {
+    getExpensesByCategory(): void {
         this.expenseService.getExpensesByCategory(this.category).then(
             (expenses: Array<Expense>) => {
-                this.categorizedExpenses = this.expenseService.sortByDateDescending(expenses);
+                this.categorizedExpenses = expenses;
             }
         );
     }
 
     deleteExpense(expense: Expense) {
         this.expenseService.deleteExpense(expense).then(
-            (isSuccessfullyDeleted: boolean) => this.getExpensesByCategory()
+            (isSuccessfullyDeleted: boolean): void => this.getExpensesByCategory()
         );
     }
 }

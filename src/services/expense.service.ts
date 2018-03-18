@@ -18,10 +18,10 @@ export class ExpenseService {
         )
     }
 
-    areExpensesDifferent(expense: Expense, expenseToDelete: Expense): boolean{
+    areExpensesDifferent(expense: Expense, expenseToDelete: Expense): boolean {
         return expense.category !== expenseToDelete.category ||
             expense.amount !== expenseToDelete.amount ||
-            expense.date.getTime() !== expenseToDelete.date.getTime() ||
+            expense.date !== expenseToDelete.date ||
             expense.description !== expenseToDelete.description ? true : false;
     }
 
@@ -111,7 +111,7 @@ export class ExpenseService {
 
     private filterExpenses(expenses: Expense[], budget: Budget): Expense[] {
         expenses.filter((expense: Expense) => {
-            return expense.date >= budget.startDate && expense.date <= budget.endDate;
+            return new Date(expense.date) >= budget.startDate && new Date(expense.date) <= budget.endDate;
         });
 
         return expenses;
