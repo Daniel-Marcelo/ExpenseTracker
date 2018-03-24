@@ -18,13 +18,6 @@ export class ExpenseService {
         )
     }
 
-    areExpensesDifferent(expense: Expense, expenseToDelete: Expense): boolean {
-        return expense.category !== expenseToDelete.category ||
-            expense.amount !== expenseToDelete.amount ||
-            expense.date !== expenseToDelete.date ||
-            expense.description !== expenseToDelete.description ? true : false;
-    }
-
     getExpenses(budget?: Budget): Promise<Expense[]> {
 
         return <Promise<Expense[]>>this.storage.get('expenses').then((expenses: Expense[]) => {
@@ -74,6 +67,16 @@ export class ExpenseService {
         );
     }
 
+    getAggregatedExpensesByBudget(budget: Budget): Promise<Expense[]> {
+        return <Promise<Expense[]>>this.getExpenses(budget).then(
+            (expenses: Expense[]) => {
+                expenses = this.aggregateExpenses(expenses);
+                expenses = this.sortByAmount(expenses);
+                return expenses;
+            }
+        );
+    }
+
     aggregateExpenses(expenses: Expense[]): Expense[] {
         const aggregatedExpenses: Expense[] = new Array<Expense>();
 
@@ -109,12 +112,19 @@ export class ExpenseService {
         }
     }
 
-    private filterExpenses(expenses: Expense[], budget: Budget): Expense[] {
-        expenses.filter((expense: Expense) => {
-            return new Date(expense.date) >= budget.startDate && new Date(expense.date) <= budget.endDate;
+    filterExpenses(expenses: Array<Expense>, budget: Budget): Array<Expense> {
+        const filteredExpenses = expenses.filter((expense: Expense) => {
+            return new Date(expense.date) >= new Date(budget.startDate) && new Date(expense.date) <= new Date(budget.endDate);
         });
 
-        return expenses;
+        return filteredExpenses;
+    }
+
+    private areExpensesDifferent(expense: Expense, expenseToDelete: Expense): boolean {
+        return expense.category !== expenseToDelete.category ||
+            expense.amount !== expenseToDelete.amount ||
+            expense.date !== expenseToDelete.date ||
+            expense.description !== expenseToDelete.description ? true : false;
     }
 
     addExpense(expense: Expense): void {

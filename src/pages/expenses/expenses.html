@@ -6,21 +6,27 @@
 -->
 <ion-header>
 
-    <ion-navbar>
-      <button ion-button menuToggle>
-        <ion-icon name="menu"></ion-icon>
-      </button>
-      <ion-title>Expenses</ion-title>
-    </ion-navbar>
-  
-  </ion-header>
-  
-  
-  <ion-content padding>
-    <ion-list>
-        <button ion-item *ngFor="let expense of expenses" (click)="expenseCategorySelected(expense.category)">
-          <span style="text-align: left">{{ expense.category }}</span>
-          <span style="float: right; margin-right: 30px">€ {{expense.amount}}</span>
-        </button>  
-      </ion-list>
+  <ion-navbar>
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>Expenses</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding>
+  <ion-item>
+    <ion-label floating>Budget Period</ion-label>
+    <ion-select [(ngModel)]="budget" interface="popover">
+      <ion-option *ngFor="let budget of budgets" (ionSelect)="getExpenses(budget)" [value]="budget">{{budget.startDate | date : 'dd/MM/yyyy'}} - {{budget.endDate | date : 'dd/MM/yyyy'}}</ion-option>
+    </ion-select>
+  </ion-item>
+  <ion-list>
+    <button ion-item *ngFor="let expense of expenses" (click)="expenseCategorySelected(expense.category)">
+      <span style="text-align: left">{{ expense.category }}</span>
+      <span style="float: right; margin-right: 30px">€ {{expense.amount}}</span>
+    </button>
+  </ion-list>
 </ion-content>
