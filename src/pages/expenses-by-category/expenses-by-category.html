@@ -10,7 +10,7 @@
         <button ion-button menuToggle>
             <ion-icon name="menu"></ion-icon>
         </button>
-        <ion-title>{{category}} Expenses</ion-title>
+        <ion-title>{{category}}</ion-title>
     </ion-navbar>
 
 </ion-header>
@@ -20,12 +20,14 @@
     <ion-list>
         <ion-item-sliding *ngFor="let expense of categorizedExpenses">
             <button ion-item>
-                <div col-6 style="display: inline-block;">
-                    <div style="text-align: left">{{ expense.date | date: mediumDate}} </div>
-                    <div style="margin-right: 30px; color: grey; font-size: 1.3rem">{{ expense.description }}</div>
-                </div>
-                <div col-6 style="display: inline-block;">
-                    <span style="float: right; margin-right: 30px">€ {{expense.amount}}</span>
+                <div style="display: table" col-12>
+                    <div col-6 style="display: table-cell; vertical-align: middle;">
+                        <div style="text-align: left">{{ expense.date | date: mediumDate}} </div>
+                        <div style="margin-right: 30px; color: grey; font-size: 1.3rem" *ngIf="expense.description">{{ expense.description }}</div>
+                    </div>
+                    <div col-6 style="display: table-cell; vertical-align: middle;">
+                        <span style="float: right; margin-right: 30px">€ {{expense.amount}}</span>
+                    </div>
                 </div>
             </button>
             <ion-item-options (ionSwipe)="deleteExpense(expense)">

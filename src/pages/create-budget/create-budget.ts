@@ -23,7 +23,7 @@ export class CreateBudgetPage implements OnInit {
   endDateString: string;
   createBudgetForm: FormGroup;
   toast: Toast;
-  
+
 
   ngOnInit(): void {
     this.createBudgetForm = new FormGroup({
@@ -45,27 +45,30 @@ export class CreateBudgetPage implements OnInit {
   }
 
   doCreateBudget() {
+
+    this.budget.startDate = this.startDateString;
+    this.budget.endDate = this.endDateString;
     this.budgetService.createBudget(this.budget);
     this.createBudgetForm.reset();
     this.showSuccessToastMessage();
   }
 
-  get startDate() { 
-    return this.createBudgetForm.get('startDate'); 
+  get startDate() {
+    return this.createBudgetForm.get('startDate');
   }
 
-  get endDate() { 
-    return this.createBudgetForm.get('endDate'); 
+  get endDate() {
+    return this.createBudgetForm.get('endDate');
   }
 
-  getMin(){
-    return this.budget.startDate.toISOString();
+  getMin() {
+    return new Date(this.budget.startDate).toISOString();
   }
 
-  showSuccessToastMessage(){
+  showSuccessToastMessage() {
     const toast = this.toastCtrl.create({
       message: 'Budget saved successfully',
-      duration: 3000
+      duration: 1000
     });
     toast.present();
   }

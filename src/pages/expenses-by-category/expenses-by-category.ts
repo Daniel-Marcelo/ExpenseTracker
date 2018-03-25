@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
-import { NavController, ToastController, NavParams } from 'ionic-angular';
+import { Component, ViewChild } from '@angular/core';
+import { NavController, ToastController, NavParams, Navbar, ViewController } from 'ionic-angular';
 import { ExpenseService } from '../../services/expense.service';
 import { Expense } from '../../models/expense.model';
+import { Budget } from '../../models/budget.model';
 
 /**
  * 
@@ -19,26 +20,37 @@ export class ExpensesByCategoryPage {
 
     categorizedExpenses: Array<Expense>;
     category: string;
+    budget: Budget;
+    @ViewChild(Navbar) navBar: Navbar;
 
-    constructor(public navCtrl: NavController, public toastCtrl: ToastController, private expenseService: ExpenseService, private navParams: NavParams) {
+    constructor(public navCtrl: NavController, public viewController: ViewController, public toastCtrl: ToastController, private expenseService: ExpenseService, private navParams: NavParams) {
         this.category = this.navParams.get('category');
+        this.budget = this.navParams.get('budget');
     }
 
     ionViewDidEnter(): void {
-        this.getExpensesByCategory();
+        this.getExpenses();
     }
 
-    getExpensesByCategory(): void {
+    getExpenses(): void {
         this.expenseService.getExpensesByCategory(this.category).then(
             (expenses: Array<Expense>) => {
-                this.categorizedExpenses = expenses;
+                const filteredExpenses = this.budget ? this.expenseService.filterExpenses(expenses, this.budget) : expenses;
+                this.categorizedExpenses = filteredExpenses;
             }
         );
+
     }
 
     deleteExpense(expense: Expense) {
+        const isLast = this.categorizedExpenses.length === 1 ? true : false;
+
         this.expenseService.deleteExpense(expense).then(
-            (isSuccessfullyDeleted: boolean): void => this.getExpensesByCategory()
+            (isSuccessfullyDeleted: boolean): void => {
+                if (isLast) {
+                    this.navCtrl.pop();
+                }
+            }
         );
     }
 }
