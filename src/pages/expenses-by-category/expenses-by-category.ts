@@ -43,8 +43,14 @@ export class ExpensesByCategoryPage {
     }
 
     deleteExpense(expense: Expense) {
+        const isLast = this.categorizedExpenses.length === 1 ? true : false;
+
         this.expenseService.deleteExpense(expense).then(
-            (isSuccessfullyDeleted: boolean): void => this.getExpenses()
+            (isSuccessfullyDeleted: boolean): void => {
+                if (isLast) {
+                    this.navCtrl.pop();
+                }
+            }
         );
     }
 }

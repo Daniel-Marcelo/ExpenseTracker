@@ -21,6 +21,7 @@ export class AddExpense implements OnInit {
 
     ionViewDidEnter() {
         this.createExpenseForm.reset();
+        this.dateString = new Date().toISOString();
     }
 
     ngOnInit() {
