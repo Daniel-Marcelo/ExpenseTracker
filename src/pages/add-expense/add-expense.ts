@@ -58,7 +58,7 @@ export class AddExpense implements OnInit {
     doSaveExpense() {
         this.expense.category = this.categoryString;
         this.expense.description = this.descriptionString;
-        this.expense.date = this.dateString;
+        this.expense.date = new Date(this.dateString).toLocaleDateString();
         this.expense.amount = parseFloat(this.amountString);
 
         this.expenseService.addExpense(this.expense);

@@ -38,8 +38,10 @@ export class ExpensesPage {
 
     getBudgets() {
         this.budgetService.getBudgets().then(
-            (budgets: Array<Budget>) => this.budgets = budgets
-        )
+            (budgets: Array<Budget>) => {
+                this.budgets = budgets;
+            }
+        );
     }
 
     expenseCategorySelected(category: string): void {
