@@ -6,7 +6,7 @@ import { Budget } from '../models/budget.model';
 @Injectable()
 export class ExpenseService {
 
-    constructor(private storage: Storage) { }
+    constructor(private storage: Storage) { this.storage.clear() }
 
     deleteExpense(expenseToDelete: Expense): Promise<boolean> {
         return this.getExpenses().then(
@@ -20,15 +20,16 @@ export class ExpenseService {
 
     getExpenses(budget?: Budget): Promise<Expense[]> {
 
-        return <Promise<Expense[]>>this.storage.get('expenses').then((expenses: Expense[]) => {
-            expenses = expenses ? expenses : new Array<Expense>();
+        return <Promise<Expense[]>>this.storage.get('expenses').then(
+            (expenses: Expense[]) => {
+                expenses = expenses ? expenses : new Array<Expense>();
 
-            if (expenses && expenses.length > 0 && budget) {
-                return this.filterExpenses(expenses, budget);
-            } else {
-                return expenses;
-            }
-        });
+                if (expenses && expenses.length > 0 && budget) {
+                    return this.filterExpenses(expenses, budget);
+                } else {
+                    return expenses;
+                }
+            });
     }
 
     sortByDateDescending(expenses: Array<Expense>): Array<Expense> {
@@ -114,7 +115,15 @@ export class ExpenseService {
 
     filterExpenses(expenses: Array<Expense>, budget: Budget): Array<Expense> {
         const filteredExpenses = expenses.filter((expense: Expense) => {
-            return new Date(expense.date) >= new Date(budget.startDate) && new Date(expense.date) <= new Date(budget.endDate);
+            const expenseDate = new Date(expense.date);
+            const startDate = new Date(budget.startDate);
+            const endDate = new Date(budget.endDate);
+
+            expenseDate.setHours(0, 0, 0, 0);
+            startDate.setHours(0, 0, 0, 0);
+            endDate.setHours(0, 0, 0, 0);
+
+            return expenseDate >= startDate && expenseDate <= endDate;
         });
 
         return filteredExpenses;

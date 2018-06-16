@@ -12,17 +12,18 @@
     </button>
     <ion-title>Expenses</ion-title>
   </ion-navbar>
-
 </ion-header>
 
-
 <ion-content padding>
-  <ion-item>
+  <ion-item *ngIf="budgets && budgets.length > 0">
     <ion-label floating>Budget Period</ion-label>
     <ion-select [(ngModel)]="budget" interface="popover">
       <ion-option *ngFor="let budget of budgets" (ionSelect)="getExpenses(budget)" [value]="budget">{{budget.startDate | date : 'dd/MM/yyyy'}} - {{budget.endDate | date : 'dd/MM/yyyy'}}</ion-option>
     </ion-select>
   </ion-item>
+  <div padding *ngIf="!budgets || budgets.length === 0">
+    <div style="text-align: center">Create a budget to filter expenses</div>
+  </div>
   <ion-list>
     <button ion-item *ngFor="let expense of expenses" (click)="expenseCategorySelected(expense.category)">
       <span style="text-align: left">{{ expense.category }}</span>
