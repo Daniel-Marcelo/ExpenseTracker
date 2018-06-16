@@ -30,7 +30,7 @@ export class ChartsPage {
   getExpenses(budget: Budget) {
 
     this.expenseService.getExpenses(budget).then(
-      (expenses: Expense[]) => {
+      (expenses: Array<Expense>) => {
       });
   }
 
@@ -67,8 +67,8 @@ export class ChartsPage {
   }
 
   getAggregatedExpenses() {
-    this.expenseService.getAggregatedExpenses().then(
-      (aggregatedExpenses: Expense[]) => {
+    this.expenseService.getAggregatedExpensesByCategory().then(
+      (aggregatedExpenses: Array<Expense>) => {
         const colors: string[] = this.getBackgroundColors(aggregatedExpenses);
         const labels: string[] = this.getLabels(aggregatedExpenses);
         const data: number[] = this.getData(aggregatedExpenses);
@@ -85,9 +85,9 @@ export class ChartsPage {
     this.barChart.update();
   }
 
-  getBackgroundColors(aggregatedExpenses: Expense[]): string[] {
+  getBackgroundColors(aggregatedExpenses: Array<Expense>): string[] {
 
-    // const aggregatedExpenses: Expense[] = this.expenseService.getAggregatedExpenses();
+    // const aggregatedExpenses: Array<Expense> = this.expenseService.getAggregatedExpenses();
     const colors: string[] = []
 
     for (let expense of aggregatedExpenses) {
@@ -101,7 +101,7 @@ export class ChartsPage {
   // getBackgroundColors(): string[] {
 
   //   this.expenseService.getAggregatedExpenses().then(
-  //     (aggregatedExpenses: Expense[]) => {
+  //     (aggregatedExpenses: Array<Expense>) => {
   //       const colors: string[] = [];
 
   //       for (let expense of aggregatedExpenses) {
@@ -119,8 +119,8 @@ export class ChartsPage {
     return Math.floor(Math.random() * 255) + 1
   }
 
-  getLabels(aggregatedExpenses: Expense[]): string[] {
-    // const aggregatedExpenses: Expense[] = this.expenseService.getAggregatedExpenses();
+  getLabels(aggregatedExpenses: Array<Expense>): string[] {
+    // const aggregatedExpenses: Array<Expense> = this.expenseService.getAggregatedExpenses();
     const labels: string[] = [];
 
     for (const aggregatedExpense of aggregatedExpenses) {
@@ -129,8 +129,8 @@ export class ChartsPage {
     return labels;
   }
 
-  getData(aggregatedExpenses: Expense[]): number[] {
-    // const aggregatedExpenses: Expense[] = this.expenseService.getAggregatedExpenses();
+  getData(aggregatedExpenses: Array<Expense>): number[] {
+    // const aggregatedExpenses: Array<Expense> = this.expenseService.getAggregatedExpenses();
     const data: number[] = [];
 
     for (const aggregatedExpense of aggregatedExpenses) {

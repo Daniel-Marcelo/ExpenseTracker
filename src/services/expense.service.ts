@@ -10,123 +10,91 @@ export class ExpenseService {
 
     deleteExpense(expenseToDelete: Expense): Promise<boolean> {
         return this.getExpenses().then(
-            (expenses: Array<Expense>) => {
-                const filteredExpenses = expenses.filter((expense) => { return this.areExpensesDifferent(expense, expenseToDelete); })
+            (expenses) => {
+                const filteredExpenses = expenses.filter(expense => this.areExpensesDifferent(expense, expenseToDelete))
                 this.storage.set("expenses", filteredExpenses);
+
                 return true;
             }
-        )
+        );
     }
 
-    getExpenses(budget?: Budget): Promise<Expense[]> {
+    getExpenses(budget?: Budget): Promise<Array<Expense>> {
 
-        return <Promise<Expense[]>>this.storage.get('expenses').then(
-            (expenses: Expense[]) => {
+        return <Promise<Array<Expense>>>this.storage.get('expenses').then(
+            (expenses: any) => {
                 expenses = expenses ? expenses : new Array<Expense>();
 
-                if (expenses && expenses.length > 0 && budget) {
-                    return this.filterExpenses(expenses, budget);
-                } else {
-                    return expenses;
-                }
-            });
+                return budget ? this.filterExpensesByBudget(expenses, budget) : expenses;
+            }
+        );
     }
 
-    sortByDateDescending(expenses: Array<Expense>): Array<Expense> {
-        expenses.sort((expenseOne: Expense, expenseTwo: Expense) => {
-            return (expenseOne.date < expenseTwo.date) ? 1 :
-                (expenseOne.date > expenseTwo.date) ? -1 : 0;
-        });
-
-        return expenses;
+    getExpensesByCategory(category: string): Promise<Array<Expense>> {
+        return <Promise<Array<Expense>>>this.getExpenses().then(
+            (expenses) => expenses.filter(expense => expense.category === category)
+        );
     }
 
-    getExpensesByCategory(category: string): Promise<Expense[]> {
-        return <Promise<Expense[]>>this.storage.get('expenses').then((expenses: Expense[]) => {
-
-            const categoryExpenses: Array<Expense> = new Array<Expense>();
-
-            expenses = expenses ? expenses : new Array<Expense>();
-
-            expenses.forEach((expense) => {
-                if (expense.category === category) {
-                    categoryExpenses.push(expense);
-                }
-            });
-
-            return categoryExpenses;
-        });
-    }
-
-    getAggregatedExpenses(): Promise<Expense[]> {
-        return <Promise<Expense[]>>this.getExpenses().then(
-            (expenses: Expense[]) => {
-                expenses = this.aggregateExpenses(expenses);
+    getAggregatedExpensesByCategory(): Promise<Array<Expense>> {
+        return <Promise<Array<Expense>>>this.getExpenses().then(
+            (expenses) => {
+                expenses = this.aggregateExpensesByCategory(expenses);
                 expenses = this.sortByAmount(expenses);
                 return expenses;
             }
         );
     }
 
-    getAggregatedExpensesByBudget(budget: Budget): Promise<Expense[]> {
-        return <Promise<Expense[]>>this.getExpenses(budget).then(
-            (expenses: Expense[]) => {
-                expenses = this.aggregateExpenses(expenses);
+    getAggregatedExpensesByBudget(budget: Budget): Promise<Array<Expense>> {
+        return <Promise<Array<Expense>>>this.getExpenses(budget).then(
+            (expenses) => {
+                expenses = this.aggregateExpensesByCategory(expenses);
                 expenses = this.sortByAmount(expenses);
                 return expenses;
             }
         );
     }
 
-    aggregateExpenses(expenses: Expense[]): Expense[] {
-        const aggregatedExpenses: Expense[] = new Array<Expense>();
+    filterExpensesByBudget(expenses: Array<Expense>, budget: Budget): Array<Expense> {
+        return expenses.filter(
+            (expense) => {
+                const expenseDate = new Date(expense.date);
+                const startDate = new Date(budget.startDate);
+                const endDate = new Date(budget.endDate);
+
+                expenseDate.setHours(0, 0, 0, 0);
+                startDate.setHours(0, 0, 0, 0);
+                endDate.setHours(0, 0, 0, 0);
+
+                return expenseDate >= startDate && expenseDate <= endDate;
+            }
+        );
+    }
+
+    addExpense(expense: Expense): void {
+        if (expense) {
+            this.getExpenses().then(
+                (expenses) => {
+                    expenses.push(expense);
+                    this.storage.set("expenses", expenses);
+                }
+            );
+        }
+    }
+
+    private aggregateExpensesByCategory(expenses: Array<Expense>): Array<Expense> {
+        const aggregatedExpenses = new Array<Expense>();
 
         for (let expense of expenses) {
-            const isUpdated: boolean = this.updateExistingAggregation(expense, aggregatedExpenses);
+            const isUpdated = this.updateExistingAggregation(expense, aggregatedExpenses);
 
             if (!isUpdated) {
-                const newAggregatedExpense: Expense = new Expense(expense.amount, expense.category);
+                const newAggregatedExpense = new Expense(expense.amount, expense.category);
                 aggregatedExpenses.push(newAggregatedExpense);
             }
         }
         return aggregatedExpenses;
-    }
-
-    private sortByAmount(expenses: Array<Expense>): Array<Expense> {
-        expenses.sort((expenseOne: Expense, expenseTwo: Expense) => {
-            return expenseTwo.amount - expenseOne.amount;
-        });
-        return expenses;
-    }
-
-    private updateExistingAggregation(expense: Expense, aggregatedExpenses: Expense[]) {
-
-        const aggregatedExpense: Expense = aggregatedExpenses.find((aggregatedExpense) => {
-            return aggregatedExpense.category === expense.category;
-        });
-
-        if (aggregatedExpense) {
-            aggregatedExpense.amount += expense.amount;
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    filterExpenses(expenses: Array<Expense>, budget: Budget): Array<Expense> {
-        const filteredExpenses = expenses.filter((expense: Expense) => {
-            const expenseDate = new Date(expense.date);
-            const startDate = new Date(budget.startDate);
-            const endDate = new Date(budget.endDate);
-
-            expenseDate.setHours(0, 0, 0, 0);
-            startDate.setHours(0, 0, 0, 0);
-            endDate.setHours(0, 0, 0, 0);
-
-            return expenseDate >= startDate && expenseDate <= endDate;
-        });
-
-        return filteredExpenses;
     }
 
     private areExpensesDifferent(expense: Expense, expenseToDelete: Expense): boolean {
@@ -136,44 +104,19 @@ export class ExpenseService {
             expense.description !== expenseToDelete.description ? true : false;
     }
 
-    addExpense(expense: Expense): void {
-        if (expense) {
+    private updateExistingAggregation(expense: Expense, aggregatedExpenses: Array<Expense>): boolean {
 
-            this.getExpenses().then(
-                (expenses: Expense[]) => {
-                    expenses.push(expense);
-                    this.storage.set("expenses", expenses);
-                }
-            );
+        const aggregatedExpense = aggregatedExpenses.find(aggregatedExpense => aggregatedExpense.category === expense.category);
+
+        if (aggregatedExpense) {
+            aggregatedExpense.amount += expense.amount;
+            return true;
+        } else {
+            return false;
         }
     }
 
-    addAggregation(expense: Expense) {
-        this.storage.get('aggregatedExpenses').then(
-            (aggregatedExpenses: Expense[]) => {
-                const isAggregationUpdated: boolean = this.updateAggregation(aggregatedExpenses, expense);
-
-                if (!isAggregationUpdated) {
-                    const aggregatedExpense: Expense = new Expense(expense.amount, expense.category);
-
-                    aggregatedExpenses.push(aggregatedExpense);
-                    this.storage.set("aggregatedExpenses", aggregatedExpenses);
-                }
-            }
-        );
-    }
-
-    private updateAggregation(aggregatedExpenses: Expense[], expense: Expense): boolean {
-
-        let isAggregationUpdated: boolean = false;
-
-        for (const aggregatedExpense of aggregatedExpenses) {
-            if (expense.category === aggregatedExpense.category) {
-                aggregatedExpense.amount += expense.amount;
-                this.storage.set("aggregatedExpenses", aggregatedExpenses);
-                isAggregationUpdated = true;
-            }
-        }
-        return isAggregationUpdated;
+    private sortByAmount(expenses: Array<Expense>): Array<Expense> {
+        return expenses.sort((expenseOne, expenseTwo) => expenseTwo.amount - expenseOne.amount);
     }
 }
