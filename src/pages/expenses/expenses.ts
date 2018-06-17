@@ -31,7 +31,7 @@ export class ExpensesPage {
     }
 
     getAggregatedExpenses() {
-        this.expenseService.getAggregatedExpenses().then(
+        this.expenseService.getAggregatedExpensesByCategory().then(
             (expenses: Array<Expense>) => this.expenses = expenses
         );
     }

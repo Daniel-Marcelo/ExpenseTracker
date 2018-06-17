@@ -35,7 +35,7 @@ export class ExpensesByCategoryPage {
     getExpenses(): void {
         this.expenseService.getExpensesByCategory(this.category).then(
             (expenses: Array<Expense>) => {
-                const filteredExpenses = this.budget ? this.expenseService.filterExpenses(expenses, this.budget) : expenses;
+                const filteredExpenses = this.budget ? this.expenseService.filterExpensesByBudget(expenses, this.budget) : expenses;
                 this.categorizedExpenses = filteredExpenses;
             }
         );
