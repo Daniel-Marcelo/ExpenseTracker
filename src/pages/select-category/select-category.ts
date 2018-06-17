@@ -22,7 +22,7 @@ export class SelectCategoryPage {
 
   getAllCategories(): void {
     this.categoryService.getCategories().then(
-      (categories: Array<string>): void => { this.categories = categories; }
+      categories => this.categories = categories
     );
   }
 
@@ -32,20 +32,18 @@ export class SelectCategoryPage {
       this.getAllCategories();
     } else {
       this.categoryService.getCategories(this.searchString).then(
-        (categories: Array<string>): void => { this.categories = categories; }
+        categories => this.categories = categories
       );
     }
   }
 
-  categorySelected(selectedCategory: string) {
-    if (selectedCategory) {
+  categorySelected(selectedCategory: string): void {
       this.viewCtrl.dismiss(selectedCategory);
-    }
   }
 
   deleteCategory(category: string): void {
     this.categoryService.deleteCategory(category).then(
-      (categories: Array<string>): void => { this.categories = categories; }
+      categories => this.categories = categories
     );
   }
 }

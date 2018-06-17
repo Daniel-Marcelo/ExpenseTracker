@@ -8,10 +8,10 @@ export class BudgetService {
 
     constructor(private storage: Storage) { }
 
-    createBudget(budget: Budget) {
+    createBudget(budget: Budget): void {
         if (budget) {
             this.getBudgets().then(
-                (budgets: Budget[]) => {
+                (budgets: any[]) => {
                     budgets.push(budget);
                     this.storage.set('budgets', budgets);
                 }
@@ -20,8 +20,6 @@ export class BudgetService {
     }
 
     getBudgets(): Promise<Budget[]> {
-        return this.storage.get('budgets').then((budgets: Budget[]) => {
-            return budgets ? budgets : [];
-        });
+        return this.storage.get('budgets').then((budgets: any[]) => budgets ? budgets : []);
     }
 }

@@ -21,9 +21,15 @@ export class ExpensesByCategoryPage {
     categorizedExpenses: Array<Expense>;
     category: string;
     budget: Budget;
-    @ViewChild(Navbar) navBar: Navbar;
+    @ViewChild(Navbar)
+    navBar: Navbar;
 
-    constructor(public navCtrl: NavController, public viewController: ViewController, public toastCtrl: ToastController, private expenseService: ExpenseService, private navParams: NavParams) {
+    constructor(public navCtrl: NavController,
+        public viewController: ViewController,
+        public toastCtrl: ToastController,
+        private expenseService: ExpenseService,
+        private navParams: NavParams) {
+
         this.category = this.navParams.get('category');
         this.budget = this.navParams.get('budget');
     }
@@ -34,19 +40,15 @@ export class ExpensesByCategoryPage {
 
     getExpenses(): void {
         this.expenseService.getExpensesByCategory(this.category).then(
-            (expenses: Array<Expense>) => {
-                const filteredExpenses = this.budget ? this.expenseService.filterExpensesByBudget(expenses, this.budget) : expenses;
-                this.categorizedExpenses = filteredExpenses;
-            }
+            expenses => this.categorizedExpenses = this.budget ? this.expenseService.filterExpensesByBudget(expenses, this.budget) : expenses
         );
-
     }
 
-    deleteExpense(expense: Expense) {
+    deleteExpense(expense: Expense): void {
         const isLast = this.categorizedExpenses.length === 1 ? true : false;
 
         this.expenseService.deleteExpense(expense).then(
-            (isSuccessfullyDeleted: boolean): void => {
+            (isSuccessfullyDeleted) => {
                 if (isLast) {
                     this.navCtrl.pop();
                 }

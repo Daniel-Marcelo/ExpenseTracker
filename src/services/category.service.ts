@@ -10,7 +10,7 @@ export class CategoryService {
         if (category) {
             this.getCategories().then((categories: Array<string>) => {
 
-                if(categories.indexOf(category) < 0){
+                if (categories.indexOf(category) < 0) {
                     categories.push(category.toUpperCase());
                 }
                 this.storage.set('categories', categories);
@@ -32,26 +32,21 @@ export class CategoryService {
 
     deleteCategory(category: string): Promise<Array<string>> {
 
-        return <Promise<Array<string>>>this.getCategories().then((categories: Array<string>) => {
-            categories = categories ? categories : new Array<string>();
-            let categoryIndex: number = categories.indexOf(category);
-            if(categoryIndex > -1){
-                categories.splice(categoryIndex, 1);
+        return <Promise<Array<string>>>this.getCategories().then(
+            (categories: Array<string>) => {
+                categories = categories ? categories : new Array<string>();
+
+                let categoryIndex = categories.indexOf(category);
+                if (categoryIndex > -1) {
+                    categories.splice(categoryIndex, 1);
+                }
+                this.storage.set('categories', categories);
+                return categories;
             }
-            this.storage.set('categories', categories);
-            return categories;
-        });
+        );
     }
 
     private filterCategories(categories: Array<string>, searchString: string): Array<string> {
-        const filteredCategories: Array<string> = new Array<string>();
-
-        categories.forEach(category => {
-            if (category.toUpperCase().indexOf(searchString.toUpperCase()) >= 0) {
-                filteredCategories.push(category);
-            }
-        });
-
-        return filteredCategories;
+        return categories.filter(category => category.toUpperCase().indexOf(searchString.toUpperCase()) >= 0);
     }
 }
