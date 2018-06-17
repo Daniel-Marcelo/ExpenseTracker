@@ -43,7 +43,7 @@ export class AddExpense implements OnInit {
         this.expense = new Expense();
     }
 
-    openCategorySelectionModal() {
+    openCategorySelectionModal(): void {
 
         let profileModal = this.modalCtrl.create(SelectCategoryPage);
 
@@ -55,7 +55,7 @@ export class AddExpense implements OnInit {
         profileModal.present();
     }
 
-    doSaveExpense() {
+    doSaveExpense(): void {
         this.expense.category = this.categoryString;
         this.expense.description = this.descriptionString;
         this.expense.date = new Date(this.dateString).toLocaleDateString();
@@ -67,7 +67,7 @@ export class AddExpense implements OnInit {
         this.showSuccessToastMessage();
     }
 
-    showSuccessToastMessage() {
+    showSuccessToastMessage(): void {
         const toast = this.toastCtrl.create({
             message: 'Expense saved successfully',
             duration: 1000,

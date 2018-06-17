@@ -8,10 +8,8 @@ import { ExpensesPage } from '../expenses/expenses';
   templateUrl: 'tabs.html'
 })
 export class TabsPage {
-
   tab1Root = AddExpense;
   tab2Root = ExpensesPage;
   tab3Root = AddCategory;
   tab4Root = ChartsPage;
-
 }

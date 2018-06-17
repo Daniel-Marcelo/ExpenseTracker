@@ -23,24 +23,25 @@ export class ExpensesPage {
     budgets: Array<Budget>;
     expenses: Array<Expense>;
 
-    constructor(public navCtrl: NavController, private viewController: ViewController, private expenseService: ExpenseService, private budgetService: BudgetService) { }
+    constructor(public navCtrl: NavController,
+        private viewController: ViewController,
+        private expenseService: ExpenseService,
+        private budgetService: BudgetService) { }
 
     ionViewDidEnter(): void {
         this.getAggregatedExpenses();
         this.getBudgets();
     }
 
-    getAggregatedExpenses() {
+    getAggregatedExpenses(): void {
         this.expenseService.getAggregatedExpensesByCategory().then(
-            (expenses: Array<Expense>) => this.expenses = expenses
+            expenses => this.expenses = expenses
         );
     }
 
-    getBudgets() {
+    getBudgets(): void {
         this.budgetService.getBudgets().then(
-            (budgets: Array<Budget>) => {
-                this.budgets = budgets;
-            }
+            budgets => this.budgets = budgets
         );
     }
 
@@ -50,7 +51,7 @@ export class ExpensesPage {
 
     getExpenses(budget: Budget): void {
         this.expenseService.getAggregatedExpensesByBudget(budget).then(
-            (expenses: Array<Expense>) => this.expenses = expenses
+            expenses => this.expenses = expenses
         );
     }
 }

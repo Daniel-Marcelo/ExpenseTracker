@@ -36,15 +36,13 @@ export class CreateBudgetPage implements OnInit {
     });
   }
 
-  constructor(private budgetService: BudgetService, public navCtrl: NavController, public toastCtrl: ToastController) {
+  constructor(private budgetService: BudgetService,
+    public navCtrl: NavController,
+    public toastCtrl: ToastController) {
     this.budget = new Budget();
   }
 
-  ionViewDidLoad() {
-    console.log('ionViewDidLoad CreateBudgetPage');
-  }
-
-  doCreateBudget() {
+  doCreateBudget(): void {
 
     this.budget.startDate = this.startDateString;
     this.budget.endDate = this.endDateString;
@@ -61,11 +59,11 @@ export class CreateBudgetPage implements OnInit {
     return this.createBudgetForm.get('endDate');
   }
 
-  getMin() {
+  getMin(): string {
     return new Date(this.budget.startDate).toISOString();
   }
 
-  showSuccessToastMessage() {
+  showSuccessToastMessage(): void {
     const toast = this.toastCtrl.create({
       message: 'Budget saved successfully',
       duration: 1000

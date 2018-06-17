@@ -22,7 +22,7 @@ export class ExpenseService {
     getExpenses(budget?: Budget): Promise<Array<Expense>> {
 
         return <Promise<Array<Expense>>>this.storage.get('expenses').then(
-            (expenses: any) => {
+            (expenses: any[]) => {
                 expenses = expenses ? expenses : new Array<Expense>();
 
                 return budget ? this.filterExpensesByBudget(expenses, budget) : expenses;
